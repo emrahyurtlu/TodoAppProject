@@ -31,7 +31,7 @@ namespace TodoApp.Api.Services
 
         public void Add(TodoItem todoItem)
         {
-            _context.TodoItem.Add(todoItem);
+            var result = _context.TodoItem.Add(todoItem);
             _context.SaveChanges();
         }
 

@@ -18,7 +18,12 @@ namespace TodoApp.Api
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<TodoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConStr")));
             builder.Services.AddScoped<TodoItemService, TodoItemService>();
-
+            builder.Services.AddCors(options => options.AddPolicy("Localhost", builder =>
+            {
+                builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+            }));
 
 
 
@@ -31,8 +36,9 @@ namespace TodoApp.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseAuthorization();
+            app.UseCors("Localhost");
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
