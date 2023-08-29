@@ -17,7 +17,7 @@ namespace TodoApp.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<TodoContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConStr")));
-            builder.Services.AddScoped<TodoItemService, TodoItemService>();
+            builder.Services.AddScoped<ITodoItemService, TodoItemService>();
             builder.Services.AddCors(options => options.AddPolicy("Localhost", builder =>
             {
                 builder.AllowAnyOrigin()

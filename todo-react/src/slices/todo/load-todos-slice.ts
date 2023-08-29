@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import axios from "axios"
 import RequestStatus from "../../models/RequestStatus"
 import TodoModel from "../../models/TodoModel"
+import Endpoints from "../../utils/endpoints"
 
 const initialState = {
   data: [] as TodoModel[],
@@ -11,7 +12,7 @@ const initialState = {
 export const loadTodos = createAsyncThunk("GetTodos", async (query?: string | null) => {
   if (query == undefined || query == null) query = ""
   try {
-    const response = await axios.get<TodoModel[]>("http://localhost:5108/api/todoitems", {data: {query: query}, params: {query: query}})
+    const response = await axios.get<TodoModel[]>(Endpoints.Todos, {data: {query: query}, params: {query: query}})
     return response.data
   } catch (error) {
     initialState.status = RequestStatus.Rejected

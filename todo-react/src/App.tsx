@@ -40,6 +40,8 @@ const App = () => {
                 <Row className='bg-white p-2 rounded border'>
                   <Col md="12">
                     <h4>Todos</h4>
+                    {status == RequestStatus.Fulfilled && <small>{todos.length} results found.</small>}
+                    <hr />
                   </Col>
                   <Col md="12">
                     {status == RequestStatus.Pending && <Spinner variant='primary' />}

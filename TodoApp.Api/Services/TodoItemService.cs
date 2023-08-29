@@ -3,7 +3,7 @@ using TodoApp.Api.Models;
 
 namespace TodoApp.Api.Services
 {
-    public class TodoItemService
+    public class TodoItemService : ITodoItemService
     {
         private readonly TodoContext _context;
 

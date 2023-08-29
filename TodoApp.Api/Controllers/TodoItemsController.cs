@@ -9,28 +9,36 @@ namespace TodoApp.Api.Controllers
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
-        private readonly TodoItemService _todoItemService;
+        private readonly ITodoItemService _todoItemService;
 
-        public TodoItemsController(TodoItemService todoItemService)
+        public TodoItemsController(ITodoItemService todoItemService)
         {
             _todoItemService = todoItemService;
         }
 
         // GET: api/<TodoItemsController>
         [HttpGet]
-        public IEnumerable<TodoItem> Get(string? query = null)
+        public ActionResult<IEnumerable<TodoItem>> Get(string? query = null)
         {
+            IEnumerable<TodoItem> result = null;
             if (query is not null)
             {
-                return _todoItemService.Search(query);
+                result = _todoItemService.Search(query);
+            }
+            else
+            {
+                result = _todoItemService.GetAll();
             }
 
-            return _todoItemService.GetAll();
+            if (result.Count() > 0)
+                return Ok(result);
+            else
+                return new EmptyResult();
         }
 
         // GET api/<TodoItemsController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        public ActionResult<TodoItem> Get(Guid id)
         {
             try
             {
@@ -46,7 +54,7 @@ namespace TodoApp.Api.Controllers
 
         // POST api/<TodoItemsController>
         [HttpPost]
-        public IActionResult Post([FromBody] TodoItemDto todoItemDto)
+        public ActionResult<string> Post([FromBody] TodoItemDto todoItemDto)
         {
             var todoItem = new TodoItem
             {
@@ -67,7 +75,7 @@ namespace TodoApp.Api.Controllers
 
         // PUT api/<TodoItemsController>/5
         [HttpPut]
-        public IActionResult Put([FromBody] TodoItem todoItem)
+        public ActionResult<string> Put([FromBody] TodoItem todoItem)
         {
             todoItem.UpdatedAt = DateTime.Now;
             _todoItemService.Update(todoItem);
@@ -77,15 +85,15 @@ namespace TodoApp.Api.Controllers
 
         // DELETE api/<TodoItemsController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public ActionResult<string> Delete(Guid id)
         {
             _todoItemService.Remove(id);
-            IActionResult result = Get(id);
+            var result = Get(id);
 
-            if (result is BadRequestObjectResult)
+            if (result.Result is BadRequestObjectResult)
                 return Ok("Todo is deleted.");
             else
-                return BadRequest((result as BadRequestObjectResult).Value);
+                return BadRequest(result.Value);
 
         }
     }

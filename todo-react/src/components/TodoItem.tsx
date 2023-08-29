@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast/headless'
 import TodoState from '../models/TodoState'
 import { useDispatch } from 'react-redux'
 import { loadTodos } from '../slices/todo/load-todos-slice'
+import Endpoints from '../utils/endpoints'
 
 const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
     const dispatcher = useDispatch<any>();
@@ -19,13 +20,11 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
 
     const deleteTodo = () => {
         setConfirmForDelete(false);
-        axios.delete(`http://localhost:5108/api/todoitems/${ todoItem.todoItemId }`)
+        axios.delete(`${ Endpoints.Todos }/${ todoItem.todoItemId }`)
             .then(result => {
-                console.log("result: ", result.data)
                 toast.success(result.data)
                 dispatcher(loadTodos(null))
             }).catch(reason => {
-                console.log(reason.response.data)
                 toast.error(reason.response.data)
             });
     }
@@ -35,13 +34,11 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
 
         const updatedTodo = { ...todoItem, ...{ state: TodoState.Done } }
 
-        axios.put("http://localhost:5108/api/todoitems", updatedTodo)
+        axios.put(Endpoints.Todos, updatedTodo)
             .then(result => {
-                console.log("result: ", result.data)
                 toast.success(result.data)
                 dispatcher(loadTodos(null))
             }).catch(reason => {
-                console.log(reason.response.data)
                 toast.error(reason.response.data)
             });
     }
@@ -51,13 +48,11 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
 
         const updatedTodo = { ...todoItem, ...{ state: TodoState.Todo } }
 
-        axios.put("http://localhost:5108/api/todoitems", updatedTodo)
+        axios.put(Endpoints.Todos, updatedTodo)
             .then(result => {
-                console.log("result: ", result.data)
                 toast.success(result.data)
                 dispatcher(loadTodos(null))
             }).catch(reason => {
-                console.log(reason.response.data)
                 toast.error(reason.response.data)
             });
     }

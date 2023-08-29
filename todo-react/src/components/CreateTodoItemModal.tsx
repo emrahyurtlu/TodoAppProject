@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { loadTodos } from '../slices/todo/load-todos-slice';
+import Endpoints from '../utils/endpoints'
 
 
 
@@ -19,16 +20,12 @@ const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void 
 
     const onSubmit = (data) => {
 
-        axios.post("http://localhost:5108/api/todoitems", data)
+        axios.post(Endpoints.Todos, data)
             .then(result => {
-                if (result.status == 200) {
-                    console.log(result.data)
-                    toast.success(result.data);
-                    dispatcher(loadTodos(null))
-                }
+                toast.success(result.data);
+                dispatcher(loadTodos(null))
             }).catch(reason => {
                 toast.error(reason)
-                console.log(reason);
             })
 
         props.hideModal()
