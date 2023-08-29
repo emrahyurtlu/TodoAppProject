@@ -1,15 +1,16 @@
-import { faArrowRotateLeft, faCircleCheck, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRotateLeft, faCircleCheck, faEdit, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axios from 'axios'
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
-import TodoItemModel from '../models/TodoModel'
-import Confirm from './Confirm'
-import axios from 'axios'
 import { toast } from 'react-hot-toast/headless'
-import TodoState from '../models/TodoState'
 import { useDispatch } from 'react-redux'
+import TodoItemModel from '../models/TodoModel'
+import TodoState from '../models/TodoState'
 import { loadTodos } from '../slices/todo/load-todos-slice'
 import Endpoints from '../utils/endpoints'
+import Confirm from './Confirm'
+import UpdateTodoItemModal from './UpdateTodoItemModal'
 
 const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
     const dispatcher = useDispatch<any>();
@@ -17,6 +18,7 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
     const [confirmForDelete, setConfirmForDelete] = useState(false);
     const [confirmForDone, setConfirmForDone] = useState(false);
     const [confirmForUndo, setConfirmForUndo] = useState(false);
+    const [editTodo, setEditTodo] = useState(false);
 
     const deleteTodo = () => {
         setConfirmForDelete(false);
@@ -66,6 +68,10 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
                     <div className='text-secondary'><small>Created at: {todoItem.createdAt}</small> - {todoItem.updatedAt && <small>Updated at: {todoItem.updatedAt}</small>}</div>
                 </div>
                 <div className='d-flex justify-content-end gap-2'>
+                    {todoItem.state == TodoState.Todo && <Button variant='warning' size='sm' onClick={() => setEditTodo(true)}>
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                    </Button>}
+
                     <Button variant='danger' size='sm' onClick={() => setConfirmForDelete(true)}>
                         <FontAwesomeIcon icon={faTrashCan} /> Delete
                     </Button>
@@ -95,6 +101,8 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
                 show={confirmForUndo}
                 confirmationFunc={undoTodo}
                 onHide={() => setConfirmForUndo(false)} />}
+
+            {editTodo && <UpdateTodoItemModal showModal={editTodo} hideModal={() => setEditTodo(false)} todoItem={todoItem} />}
         </React.Fragment>
     )
 }

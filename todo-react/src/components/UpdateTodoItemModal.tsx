@@ -10,29 +10,35 @@ import TodoModel from '../models/TodoModel';
 
 
 
-const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void, todoItem?: TodoModel }> = (props) => {
+const UpdateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void, todoItem?: TodoModel }> = (props) => {
+    console.log("todoItem: ", props.todoItem)
     const dispatcher = useDispatch<any>();
     const formRef = useRef<HTMLFormElement>();
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             title: props.todoItem?.title || "",
-            description: props.todoItem?.description || ""
+            description: props.todoItem?.description || "",
+            // todoItemId: props.todoItem?.todoItemId || "",
+            // state: props.todoItem?.state || "",
+            // createdAt: props.todoItem?.createdAt || "",
         }
     });
 
 
-    const createButtonOnClickHandler = () => formRef.current?.requestSubmit();
+    const updateButtonOnClickHandler = () => formRef.current?.requestSubmit();
 
     const onSubmit = (data) => {
+        const updatedTodo = { ...props.todoItem, ...data };
+        console.log(updatedTodo);
 
-        axios.post(Endpoints.Todos, data)
+        axios.put(Endpoints.Todos, updatedTodo)
             .then(result => {
-                toast.success(result.data);
+                toast.success(result.data)
                 dispatcher(loadTodos(null))
             }).catch(reason => {
-                toast.error(reason)
-            })
+                toast.error(reason.response.data)
+            });
 
         props.hideModal()
     }
@@ -59,8 +65,8 @@ const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void,
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" type='submit' onClick={createButtonOnClickHandler} data-cy="create">
-                    Create
+                <Button variant="primary" type='submit' onClick={updateButtonOnClickHandler} data-cy="update">
+                    Update
                 </Button>
                 <Button variant="secondary" onClick={props.hideModal}>
                     Close
@@ -70,4 +76,4 @@ const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void,
     )
 }
 
-export default CreateTodoItemModal
+export default UpdateTodoItemModal
