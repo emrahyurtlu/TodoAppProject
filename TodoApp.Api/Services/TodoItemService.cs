@@ -1,4 +1,5 @@
 ﻿using TodoApp.Api.Dal;
+using TodoApp.Api.Enums;
 using TodoApp.Api.Models;
 
 namespace TodoApp.Api.Services
@@ -54,6 +55,11 @@ namespace TodoApp.Api.Services
             {
                 throw new Exception("Todo item could not found.");
             }
+        }
+
+        public IEnumerable<TodoItem> Search(TodoState state, string query)
+        {
+            return _context.TodoItem.Where(t => t.State == state && (t.Title.Contains(query) || t.Description.Contains(query))).ToList();
         }
     }
 }

@@ -1,12 +1,12 @@
 import TodoState from "./TodoState"
 
 interface TodoModel {
-  TodoItemId: string
-  Title: string
-  Description: string | null
-  State: TodoState
-  CreatedAt: Date
-  UpdatedAt?: Date
+  todoItemId: string
+  title: string
+  description: string | null
+  state: TodoState
+  createdAt: string
+  updatedAt?: string
 }
 
 export default TodoModel

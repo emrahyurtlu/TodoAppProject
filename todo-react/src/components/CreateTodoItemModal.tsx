@@ -3,10 +3,14 @@ import React, { useRef } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 import { toast } from 'react-hot-toast';
+import { loadTodos } from '../slices/todo/load-todos-slice';
+import { useDispatch } from 'react-redux';
+import TodoState from '../models/TodoState';
 
 
 
 const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void }> = (props) => {
+    const dispatcher = useDispatch<any>();
     const formRef = useRef<HTMLFormElement>();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -21,6 +25,7 @@ const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void 
                 if (result.status == 200) {
                     console.log(result.data)
                     toast.success(result.data);
+                    dispatcher(loadTodos({ state: TodoState.Todo, query: "" }))
                 }
             }).catch(reason => {
                 toast.error(reason)

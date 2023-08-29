@@ -9,11 +9,11 @@ import store from './slices/store.ts';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
       <Toaster
         position="top-right"
         toastOptions={{ duration: 4000 }}
       />
+      <App />
     </Provider>
   </React.StrictMode>,
 )

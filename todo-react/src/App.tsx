@@ -1,22 +1,22 @@
 import { useEffect } from 'react';
-import { Card, Col, Container, Row } from 'react-bootstrap';
+import { Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import TodoListHeader from './components/TodoListHeader';
 import RequestStatus from './models/RequestStatus';
 import { loadTodos, todosSelector, todosStatusSelector } from './slices/todo/load-todos-slice';
 import TodoModel from './models/TodoModel';
+import TodoItem from './components/TodoItem';
+import TodoState from './models/TodoState';
 
 const App = () => {
   //const [todoItem, setTodoItem] = useState<TodoModel>({ Title: "Test Todo Element", Description: "My test description.", TodoItemId: "xsdg-fghjfghj-asfd", State: TodoState.Todo, CreatedAt: new Date(), UpdatedAt: new Date() });
   const dispatcher = useDispatch();
-  const todos = useSelector<Array<TodoModel>>(todosSelector);
-  console.log("todos: ", todos);
+  const todos: Array<TodoModel> = useSelector(todosSelector);
   const status = useSelector(todosStatusSelector)
-  console.log("status: ", status)
 
   useEffect(() => {
     if (status == RequestStatus.Idle) {
-      dispatcher(loadTodos());
+      dispatcher(loadTodos({ state: TodoState.Todo, query: "" }));
     }
   }, []);
 
@@ -44,12 +44,9 @@ const App = () => {
                     <h4>Todos</h4>
                   </Col>
                   <Col md="12">
-                    {/* <TodoItem todoItem={todoItem} />
-                    <TodoItem todoItem={todoItem} />
-                    <TodoItem todoItem={todoItem} />
-                    <TodoItem todoItem={todoItem} />
-                    <TodoItem todoItem={todoItem} />
-                    <TodoItem todoItem={todoItem} /> */}
+                    {status == RequestStatus.Pending && <Spinner variant='primary' />}
+                    {status == RequestStatus.Fulfilled && todos.length > 0 && todos.map(todoItem => <TodoItem key={todoItem.todoItemId} todoItem={todoItem} />)}
+                    {status == RequestStatus.Fulfilled && todos.length == 0 && <h5 className='text-danger'>No records found.</h5>}
                   </Col>
                 </Row>
               </Container>

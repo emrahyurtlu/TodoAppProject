@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoApp.Api.Dtos;
+using TodoApp.Api.Enums;
 using TodoApp.Api.Models;
 using TodoApp.Api.Services;
 
@@ -18,20 +19,30 @@ namespace TodoApp.Api.Controllers
 
         // GET: api/<TodoItemsController>
         [HttpGet]
-        public IEnumerable<TodoItem> Get()
+        public IEnumerable<TodoItem> Get(TodoState state = TodoState.Todo, string? query = null)
         {
-            return _todoItemService.GetAll();
+            if (query is not null)
+            {
+                return _todoItemService.Search(state, query);
+            }
+
+            return _todoItemService.GetAll().Where(t => t.State == state).ToList();
         }
 
         // GET api/<TodoItemsController>/5
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            var entity = _todoItemService.Get(id);
-            if (entity is not null)
+            try
+            {
+                var entity = _todoItemService.Get(id);
                 return Ok(entity);
-            else
-                return BadRequest("Please try again");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Please try again. " + ex.Message);
+            }
+
         }
 
         // POST api/<TodoItemsController>
@@ -62,7 +73,7 @@ namespace TodoApp.Api.Controllers
             todoItem.UpdatedAt = DateTime.Now;
             _todoItemService.Update(todoItem);
 
-            return Ok();
+            return Ok("Todo is updated.");
         }
 
         // DELETE api/<TodoItemsController>/5
@@ -70,12 +81,12 @@ namespace TodoApp.Api.Controllers
         public IActionResult Delete(Guid id)
         {
             _todoItemService.Remove(id);
-            var entity = Get(id);
+            IActionResult result = Get(id);
 
-            if (entity is null)
+            if (result is BadRequestObjectResult)
                 return Ok("Todo is deleted.");
             else
-                return BadRequest("Please try again");
+                return BadRequest((result as BadRequestObjectResult).Value);
 
         }
     }
