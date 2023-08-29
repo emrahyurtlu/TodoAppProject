@@ -31,7 +31,7 @@ const TodoListHeader = () => {
             <Row className='bg-white p-2 rounded border'>
                 <Col md="3">
                     <div className="d-grid">
-                        <Button onClick={newTodoOnClickHandler}>
+                        <Button onClick={newTodoOnClickHandler} data-cy="new-todo">
                             <FontAwesomeIcon icon={faPlusCircle} /> New Todo
                         </Button>
                     </div>

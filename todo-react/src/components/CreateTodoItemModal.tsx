@@ -53,7 +53,7 @@ const CreateTodoItemModal: React.FC<{ showModal: boolean; hideModal: () => void 
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="primary" type='submit' onClick={createButtonOnClickHandler}>
+                <Button variant="primary" type='submit' onClick={createButtonOnClickHandler} data-cy="create">
                     Create
                 </Button>
                 <Button variant="secondary" onClick={props.hideModal}>
