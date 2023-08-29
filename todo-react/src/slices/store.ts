@@ -1,5 +1,4 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit"
-import thunk from "redux-thunk"
 import todos from "./todo/load-todos-slice"
 
 const reducers = combineReducers({
@@ -8,7 +7,7 @@ const reducers = combineReducers({
 
 const store = configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(thunk),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 })
 
 export default store

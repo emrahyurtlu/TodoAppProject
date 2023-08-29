@@ -3,25 +3,23 @@ import { Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import TodoListHeader from './components/TodoListHeader';
 import RequestStatus from './models/RequestStatus';
-import { loadTodos, todosSelector, todosStatusSelector } from './slices/todo/load-todos-slice';
 import TodoModel from './models/TodoModel';
+import { loadTodos, todosSelector, todosStatusSelector } from './slices/todo/load-todos-slice';
 import TodoItem from './components/TodoItem';
-import TodoState from './models/TodoState';
+
 
 const App = () => {
-  //const [todoItem, setTodoItem] = useState<TodoModel>({ Title: "Test Todo Element", Description: "My test description.", TodoItemId: "xsdg-fghjfghj-asfd", State: TodoState.Todo, CreatedAt: new Date(), UpdatedAt: new Date() });
   const dispatcher = useDispatch();
   const todos: Array<TodoModel> = useSelector(todosSelector);
   const status = useSelector(todosStatusSelector)
 
   useEffect(() => {
+
     if (status == RequestStatus.Idle) {
-      dispatcher(loadTodos({ state: TodoState.Todo, query: "" }));
+      dispatcher(loadTodos(null));
     }
+
   }, []);
-
-
-
 
   return (
     <Container>

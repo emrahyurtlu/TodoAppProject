@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoApp.Api.Dtos;
-using TodoApp.Api.Enums;
 using TodoApp.Api.Models;
 using TodoApp.Api.Services;
 
@@ -19,14 +18,14 @@ namespace TodoApp.Api.Controllers
 
         // GET: api/<TodoItemsController>
         [HttpGet]
-        public IEnumerable<TodoItem> Get(TodoState state = TodoState.Todo, string? query = null)
+        public IEnumerable<TodoItem> Get(string? query = null)
         {
             if (query is not null)
             {
-                return _todoItemService.Search(state, query);
+                return _todoItemService.Search(query);
             }
 
-            return _todoItemService.GetAll().Where(t => t.State == state).ToList();
+            return _todoItemService.GetAll();
         }
 
         // GET api/<TodoItemsController>/5

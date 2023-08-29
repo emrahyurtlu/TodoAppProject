@@ -2,19 +2,18 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import CreateTodoItemModal from './CreateTodoItemModal';
 import { useDispatch } from 'react-redux';
 import { loadTodos } from '../slices/todo/load-todos-slice';
-import TodoState from '../models/TodoState';
+import CreateTodoItemModal from './CreateTodoItemModal';
 
 const TodoListHeader = () => {
     const dispatcher = useDispatch<any>();
     const [showModal, setShowModal] = useState(false);
-    const [query, setQuery] = useState(null);
+    const [query, setQuery] = useState("");
 
     useEffect(() => {
         if (query != null) {
-            dispatcher(loadTodos({ state: TodoState.Todo, query: query }))
+            dispatcher(loadTodos(query))
         }
     }, [query]);
 
@@ -31,9 +30,12 @@ const TodoListHeader = () => {
         <React.Fragment>
             <Row className='bg-white p-2 rounded border'>
                 <Col md="3">
-                    <Button onClick={newTodoOnClickHandler}>
-                        <FontAwesomeIcon icon={faPlusCircle} /> New Todo
-                    </Button>
+                    <div className="d-grid">
+                        <Button onClick={newTodoOnClickHandler}>
+                            <FontAwesomeIcon icon={faPlusCircle} /> New Todo
+                        </Button>
+                    </div>
+
                 </Col>
                 <Col md="9">
                     <Form.Control name='search' placeholder='Type to search' value={query} onChange={e => setQuery(e.target.value)} />

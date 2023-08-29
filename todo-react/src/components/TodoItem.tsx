@@ -1,4 +1,4 @@
-import { faCircleCheck, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRotateLeft, faCircleCheck, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
@@ -15,6 +15,7 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
 
     const [confirmForDelete, setConfirmForDelete] = useState(false);
     const [confirmForDone, setConfirmForDone] = useState(false);
+    const [confirmForUndo, setConfirmForUndo] = useState(false);
 
     const deleteTodo = () => {
         setConfirmForDelete(false);
@@ -22,7 +23,7 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
             .then(result => {
                 console.log("result: ", result.data)
                 toast.success(result.data)
-                dispatcher(loadTodos({ state: TodoState.Todo, query: "" }))
+                dispatcher(loadTodos(null))
             }).catch(reason => {
                 console.log(reason.response.data)
                 toast.error(reason.response.data)
@@ -30,7 +31,7 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
     }
 
     const doneTodo = () => {
-        setConfirmForDelete(false);
+        setConfirmForDone(false);
 
         const updatedTodo = { ...todoItem, ...{ state: TodoState.Done } }
 
@@ -38,7 +39,23 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
             .then(result => {
                 console.log("result: ", result.data)
                 toast.success(result.data)
-                dispatcher(loadTodos({ state: TodoState.Todo, query: "" }))
+                dispatcher(loadTodos(null))
+            }).catch(reason => {
+                console.log(reason.response.data)
+                toast.error(reason.response.data)
+            });
+    }
+
+    const undoTodo = () => {
+        setConfirmForUndo(false);
+
+        const updatedTodo = { ...todoItem, ...{ state: TodoState.Todo } }
+
+        axios.put("http://localhost:5108/api/todoitems", updatedTodo)
+            .then(result => {
+                console.log("result: ", result.data)
+                toast.success(result.data)
+                dispatcher(loadTodos(null))
             }).catch(reason => {
                 console.log(reason.response.data)
                 toast.error(reason.response.data)
@@ -47,9 +64,9 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
 
     return (
         <React.Fragment>
-            <div className='d-flex justify-content-between align-items-center shadow-sm p-2 mb-1 bg-white'>
+            <div className={['d-flex justify-content-between align-items-center shadow-sm p-2 mb-2 rounded', todoItem.state == TodoState.Todo ? "bg-white" : "bg-success-subtle"].join(" ")}>
                 <div>
-                    <h5 className='mb-0'>{todoItem.title}</h5>
+                    <h5 className={['mb-0', todoItem.state == TodoState.Done ? "text-decoration-line-through fst-italic" : ""].join(" ")}>{todoItem.state == TodoState.Todo ? "Todo: " : "Done: "}{todoItem.title}</h5>
                     <p className='mb-1'>{todoItem.description}</p>
                     <div className='text-secondary'><small>Created at: {todoItem.createdAt}</small> - {todoItem.updatedAt && <small>Updated at: {todoItem.updatedAt}</small>}</div>
                 </div>
@@ -57,9 +74,13 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
                     <Button variant='danger' size='sm' onClick={() => setConfirmForDelete(true)}>
                         <FontAwesomeIcon icon={faTrashCan} /> Delete
                     </Button>
-                    <Button variant='success' size='sm' onClick={() => setConfirmForDone(true)}>
+                    {todoItem.state == TodoState.Todo && <Button variant='success' size='sm' onClick={() => setConfirmForDone(true)}>
                         <FontAwesomeIcon icon={faCircleCheck} /> Done
-                    </Button>
+                    </Button>}
+
+                    {todoItem.state == TodoState.Done && <Button variant='success' size='sm' onClick={() => setConfirmForUndo(true)}>
+                        <FontAwesomeIcon icon={faArrowRotateLeft} /> Undo
+                    </Button>}
                 </div>
             </div>
             {confirmForDelete && <Confirm
@@ -73,6 +94,12 @@ const TodoItem: React.FC<{ todoItem: TodoItemModel }> = ({ todoItem }) => {
                 show={confirmForDone}
                 confirmationFunc={doneTodo}
                 onHide={() => setConfirmForDone(false)} />}
+
+            {confirmForUndo && <Confirm
+                message='Are you sure you want to undo this todo?'
+                show={confirmForUndo}
+                confirmationFunc={undoTodo}
+                onHide={() => setConfirmForUndo(false)} />}
         </React.Fragment>
     )
 }

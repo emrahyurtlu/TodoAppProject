@@ -1,18 +1,17 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit"
 import axios from "axios"
-import TodoModel from "../../models/TodoModel"
 import RequestStatus from "../../models/RequestStatus"
-import TodoState from "../../models/TodoState"
+import TodoModel from "../../models/TodoModel"
 
 const initialState = {
   data: [] as TodoModel[],
   status: "idle" as RequestStatus,
 }
 
-export const loadTodos = createAsyncThunk("GetTodos", async (data: {state: TodoState | null; query: string}) => {
-  if (data.query == undefined || data.query == null) data.query = ""
+export const loadTodos = createAsyncThunk("GetTodos", async (query?: string | null) => {
+  if (query == undefined || query == null) query = ""
   try {
-    const response = await axios.get<TodoModel[]>("http://localhost:5108/api/todoitems", {data: data})
+    const response = await axios.get<TodoModel[]>("http://localhost:5108/api/todoitems", {data: {query: query}, params: {query: query}})
     return response.data
   } catch (error) {
     initialState.status = RequestStatus.Rejected

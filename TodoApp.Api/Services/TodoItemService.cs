@@ -1,5 +1,4 @@
 ﻿using TodoApp.Api.Dal;
-using TodoApp.Api.Enums;
 using TodoApp.Api.Models;
 
 namespace TodoApp.Api.Services
@@ -57,9 +56,9 @@ namespace TodoApp.Api.Services
             }
         }
 
-        public IEnumerable<TodoItem> Search(TodoState state, string query)
+        public IEnumerable<TodoItem> Search(string query)
         {
-            return _context.TodoItem.Where(t => t.State == state && (t.Title.Contains(query) || t.Description.Contains(query))).ToList();
+            return _context.TodoItem.Where(t => t.Title.Contains(query) || t.Description.Contains(query)).ToList();
         }
     }
 }
