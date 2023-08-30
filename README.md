@@ -33,10 +33,12 @@ CREATE TABLE [dbo].[TodoItem](
 	[TodoItemId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO```
+GO
+```
 
 ## Create user todo_usr for TodosDb database 
-```USE TodosDb;
+```
+USE TodosDb;
 CREATE LOGIN todo_usr WITH PASSWORD = 'todo123';
 CREATE USER todo_usr FOR LOGIN todo_usr;
 
