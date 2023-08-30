@@ -10,7 +10,8 @@ To run the project you should follow the steps below,
 ## Create Database TodosDb
 ```CREATE DATABASE TodosDb```
 ## Create TodoItem Table in TodosDb database 
-```USE [TodosDb]
+```
+USE [TodosDb]
 GO
 
 /****** Object:  Table [dbo].[TodoItem]    Script Date: 30.08.2023 08:07:47 ******/
@@ -40,7 +41,8 @@ CREATE LOGIN todo_usr WITH PASSWORD = 'todo123';
 CREATE USER todo_usr FOR LOGIN todo_usr;
 
 ALTER ROLE db_datareader ADD MEMBER todo_usr;
-ALTER ROLE db_datawriter ADD MEMBER todo_usr;```
+ALTER ROLE db_datawriter ADD MEMBER todo_usr;
+```
 
 Now, your database is ready.
 
