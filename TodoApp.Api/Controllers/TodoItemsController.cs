@@ -61,8 +61,8 @@ namespace TodoApp.Api.Controllers
                 Title = todoItemDto.Title,
                 Description = todoItemDto.Description,
                 State = Enums.TodoState.Todo,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             _todoItemService.Add(todoItem);
@@ -77,7 +77,7 @@ namespace TodoApp.Api.Controllers
         [HttpPut]
         public ActionResult<string> Put([FromBody] TodoItem todoItem)
         {
-            todoItem.UpdatedAt = DateTime.Now;
+            todoItem.UpdatedAt = DateTime.UtcNow;
             _todoItemService.Update(todoItem);
 
             return Ok("Todo is updated.");
